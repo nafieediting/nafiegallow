@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نافع كلو | مونتير فيديو محترف</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --p1: #2d0060;
+      --p2: #4b0082;
+      --p3: #7b2fff;
+      --p4: #a259ff;
+      --p5: #c89bff;
+      --p6: #ede0ff;
+      --glow: 0 0 30px rgba(123,47,255,0.45), 0 0 70px rgba(123,47,255,0.18);
+      --glow-sm: 0 0 14px rgba(123,47,255,0.5);
+      --card-bg: rgba(45,0,96,0.55);
+      --card-border: rgba(162,89,255,0.28);
+      --text: #f0e6ff;
+      --text-muted: #b490d8;
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background: #0c0018;
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── Animated BG ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-layer::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(123,47,255,0.22) 0%, transparent 70%);
+      top: -200px; left: -200px;
+      animation: orb1 12s ease-in-out infinite alternate;
+      border-radius: 50%;
+    }
+    .bg-layer::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(75,0,130,0.3) 0%, transparent 70%);
+      bottom: 0; right: -100px;
+      animation: orb2 15s ease-in-out infinite alternate;
+      border-radius: 50%;
+    }
+    @keyframes orb1 { from { transform: translate(0,0) scale(1); } to { transform: translate(120px, 80px) scale(1.2); } }
+    @keyframes orb2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-80px, -60px) scale(1.15); } }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.04;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; width: 100%;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(12,0,24,0.7);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(162,89,255,0.12);
+      animation: fadeDown 0.8s ease both;
+    }
+    @keyframes fadeDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: translateY(0); } }
+
+    .nav-logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(120deg, var(--p4), var(--p5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--p4); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 48px 80px;
+    }
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      gap: 72px;
+      max-width: 1100px;
+      width: 100%;
+      animation: heroIn 1s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    @keyframes heroIn { from { opacity:0; transform: translateY(40px); } to { opacity:1; transform: translateY(0); } }
+
+    .hero-avatar {
+      flex-shrink: 0;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--p2), var(--p3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      box-shadow: var(--glow), inset 0 0 30px rgba(0,0,0,0.4);
+      border: 3px solid rgba(162,89,255,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .hero-avatar-placeholder {
+      font-size: 5rem;
+      opacity: 0.7;
+    }
+    .avatar-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: linear-gradient(var(--p1), var(--p1)) padding-box,
+                  linear-gradient(120deg, var(--p3), var(--p5), var(--p3)) border-box;
+      animation: spinRing 6s linear infinite;
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+
+    .hero-text { flex: 1; }
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: rgba(123,47,255,0.18);
+      border: 1px solid rgba(162,89,255,0.35);
+      color: var(--p5);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(162,89,255,0.3); } 50% { box-shadow: 0 0 0 8px rgba(162,89,255,0); } }
+
+    h1 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(130deg, #fff 40%, var(--p5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-size: 1.25rem;
+      color: var(--p4);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 36px;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--p4), var(--p5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .stat-divider {
+      width: 1px;
+      background: rgba(162,89,255,0.2);
+      align-self: stretch;
+    }
+
+    .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--p3), var(--p2));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: var(--glow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--glow); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--p4);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1.5px solid rgba(162,89,255,0.45);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .btn-outline:hover { background: rgba(123,47,255,0.12); border-color: var(--p4); transform: translateY(-3px); }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 100px 48px;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeUp 0.7s ease both;
+    }
+    .section-label {
+      display: inline-block;
+      color: var(--p4);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 800;
+      color: #fff;
+    }
+    h2 span {
+      background: linear-gradient(120deg, var(--p4), var(--p5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .about-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: fadeUp 0.7s ease both;
+    }
+    .glass-card:hover { transform: translateY(-6px); box-shadow: var(--glow); }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--p3), var(--p2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+      box-shadow: var(--glow-sm);
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .card-body {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    /* ── SKILLS ── */
+    #skills { padding: 100px 48px; }
+
+    .skills-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .skill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: fadeUp 0.7s ease both;
+    }
+    .skill-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: var(--glow); }
+    .skill-icon { font-size: 2rem; margin-bottom: 12px; }
+    .skill-name { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .skill-bar-wrap {
+      height: 6px;
+      background: rgba(162,89,255,0.15);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .skill-bar {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--p3), var(--p5));
+      box-shadow: 0 0 8px var(--p4);
+      animation: barGrow 1.2s cubic-bezier(0.16,1,0.3,1) both;
+      transform-origin: right;
+    }
+    @keyframes barGrow { from { width: 0 !important; } }
+
+    /* ── EXPERIENCE ── */
+    #experience { padding: 100px 48px; }
+
+    .timeline {
+      max-width: 780px;
+      margin: 0 auto;
+      position: relative;
+      padding-right: 32px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--p3), transparent);
+      border-radius: 2px;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 48px;
+      padding-right: 40px;
+      animation: fadeUp 0.7s ease both;
+    }
+    .timeline-dot {
+      position: absolute;
+      right: -9px; top: 6px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--p3), var(--p4));
+      border: 3px solid var(--p1);
+      box-shadow: var(--glow-sm);
+    }
+    .timeline-date {
+      font-size: 0.82rem;
+      color: var(--p4);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .timeline-role {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .timeline-company {
+      font-size: 0.95rem;
+      color: var(--p5);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .timeline-desc {
+      color: var(--text-muted);
+      font-size: 0.93rem;
+      line-height: 1.75;
+    }
+    .timeline-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .tag {
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: rgba(123,47,255,0.2);
+      border: 1px solid rgba(162,89,255,0.3);
+      color: var(--p5);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio { padding: 100px 48px; }
+
+    .portfolio-cta {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .portfolio-box {
+      background: linear-gradient(135deg, rgba(75,0,130,0.5), rgba(45,0,96,0.7));
+      border: 1px solid rgba(162,89,255,0.35);
+      border-radius: var(--radius);
+      padding: 60px 48px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--glow);
+      animation: fadeUp 0.8s ease both;
+    }
+    .portfolio-icon { font-size: 3.5rem; margin-bottom: 20px; display: block; }
+    .portfolio-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .portfolio-desc { color: var(--text-muted); margin-bottom: 32px; line-height: 1.75; }
+    .drive-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 40px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--p3), var(--p2));
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: var(--glow);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .drive-btn:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 0 50px rgba(123,47,255,0.6); }
+
+    /* ── CONTACT ── */
+    #contact { padding: 100px 48px; }
+
+    .contact-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .contact-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      color: var(--text);
+      animation: fadeUp 0.7s ease both;
+    }
+    .contact-card:hover { transform: translateY(-6px); box-shadow: var(--glow); color: var(--text); }
+    .contact-card-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
+    .contact-card-label { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .contact-card-value { font-size: 0.95rem; font-weight: 700; color: var(--p5); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 40px 48px;
+      border-top: 1px solid rgba(162,89,255,0.12);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      position: relative;
+      z-index: 1;
+    }
+    footer span { color: var(--p4); font-weight: 700; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--p1); }
+    ::-webkit-scrollbar-thumb { background: var(--p3); border-radius: 99px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 18px; }
+      #hero { padding: 100px 24px 60px; }
+      .hero-inner { flex-direction: column; gap: 36px; text-align: center; }
+      .hero-stats { justify-content: center; }
+      .hero-ctas { justify-content: center; }
+      .hero-desc { margin: 0 auto 28px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      #about, #skills, #experience, #portfolio, #contact { padding: 70px 24px; }
+    }
+    @media (max-width: 600px) {
+      .skills-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grain"></div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">نافع كلو</span>
+  <ul class="nav-links">
+    <li><a href="#about">عني</a></li>
+    <li><a href="#skills">المهارات</a></li>
+    <li><a href="#experience">الخبرة</a></li>
+    <li><a href="#portfolio">الأعمال</a></li>
+    <li><a href="#contact">التواصل</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div style="position:relative;flex-shrink:0;">
+      <div class="avatar-ring"></div>
+      <div class="hero-avatar">
+        <img src="https://res.cloudinary.com/delvt7j0g/image/upload/v1777990861/ChatGPT_Image_5_%D9%85%D8%A7%D9%8A%D9%88_2026_04_40_27_%D9%85_vryhhz.png" alt="نافع كلو" />
+      </div>
+    </div>
+    <div class="hero-text">
+      <span class="hero-tag">✦ متاح للمشاريع الجديدة</span>
+      <h1>نافع كلو</h1>
+      <p class="hero-sub">مونتير فيديو محترف · Video Editor</p>
+      <p class="hero-desc">مبدع في صناعة المحتوى البصري بخبرة تزيد عن ٣ سنوات. متمكن من Adobe Premiere Pro وAfter Effects، أحوّل الأفكار إلى فيديوهات جذابة تناسب YouTube وTikTok وReels والإعلانات.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">+500</span>
+          <span class="stat-label">مشروع منجز</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">+50</span>
+          <span class="stat-label">عميل راضٍ</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">3+</span>
+          <span class="stat-label">سنوات خبرة</span>
+        </div>
+      </div>
+      <div class="hero-ctas">
+        <a href="#portfolio" class="btn-primary">🎥 شاهد أعمالي</a>
+        <a href="#contact" class="btn-outline">📩 تواصل معي</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-label">من أنا</span>
+    <h2>قصتي مع <span>المونتاج</span></h2>
+  </div>
+  <div class="about-grid" style="max-width:1100px;margin:0 auto;">
+    <div class="glass-card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">عن نافع</div>
+      <div class="card-body">مونتير فيديو من سوريا، عمري ٢٥ سنة. شغفي الحقيقي هو تحويل اللحظات العادية إلى قصص بصرية مؤثرة. أعمل في مجال المونتاج منذ أكثر من ٣ سنوات، وأتعامل مع أنواع مختلفة من المحتوى.</div>
+    </div>
+    <div class="glass-card">
+      <div class="card-icon">🛠️</div>
+      <div class="card-title">الأدوات</div>
+      <div class="card-body">متخصص في Adobe Premiere Pro وAdobe After Effects. أتقن Color Grading والمؤثرات البصرية، ودمج الصوت والموسيقى، مع فهم عميق لتقنيات السرد البصري والـ Storytelling.</div>
+    </div>
+    <div class="glass-card">
+      <div class="card-icon">🌍</div>
+      <div class="card-title">نطاق العمل</div>
+      <div class="card-body">أعمل مع علامات تجارية، يوتيوبرز، صناع محتوى، واستوديوهات. أنتج فيديوهات لمنصات YouTube وTikTok وInstagram Reels، وإعلانات وأعمال تلفزيونية بصيغ 4K وFull HD وVertical.</div>
+    </div>
+    <div class="glass-card">
+      <div class="card-icon">🏆</div>
+      <div class="card-title">ما يميزني</div>
+      <div class="card-body">أحرص على تطوير هوية بصرية متكاملة لكل عميل. أتقن إدارة الوقت والعمل ضمن فريق إنتاج، مع قدرة على التخطيط الاستراتيجي وإدارة المشاريع بكفاءة عالية.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <span class="section-label">الكفاءات</span>
+    <h2>المهارات <span>التقنية</span></h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🎬</div>
+      <div class="skill-name">Adobe Premiere Pro</div>
+      <div style="color:var(--text-muted);font-size:.85rem;">المونتاج السينمائي الاحترافي</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:96%"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">✨</div>
+      <div class="skill-name">Adobe After Effects</div>
+      <div style="color:var(--text-muted);font-size:.85rem;">المؤثرات البصرية والحركية</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:90%"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🎨</div>
+      <div class="skill-name">Color Grading</div>
+      <div style="color:var(--text-muted);font-size:.85rem;">تصحيح وتنسيق الألوان</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:92%"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🖼️</div>
+      <div class="skill-name">موشن جرافيك</div>
+      <div style="color:var(--text-muted);font-size:.85rem;">تصميم موشن ديناميكي</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:85%"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🎵</div>
+      <div class="skill-name">Sound Design</div>
+      <div style="color:var(--text-muted);font-size:.85rem;">دمج الصوت والموسيقى</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:88%"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📖</div>
+      <div class="skill-name">Storytelling</div>
+      <div style="color:var(--text-muted);font-size:.85rem;">السرد البصري الإبداعي</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:93%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header">
+    <span class="section-label">المسيرة</span>
+    <h2>التاريخ <span>المهني</span></h2>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2022 — حتى الآن</div>
+      <div class="timeline-role">مونتير فيديو مستقل (Freelance)</div>
+      <div class="timeline-company">🌐 عالمي · عن بُعد</div>
+      <div class="timeline-desc">تنفيذ مشاريع مونتاج متنوعة لعلامات تجارية، قنوات يوتيوب، ومؤثرين على وسائل التواصل الاجتماعي. تطوير هوية بصرية متكاملة للفيديوهات وتصميم موشن جرافيك ديناميكي.</div>
+      <div class="timeline-tags">
+        <span class="tag">YouTube</span>
+        <span class="tag">TikTok</span>
+        <span class="tag">Reels</span>
+        <span class="tag">4K</span>
+        <span class="tag">Ads</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2022 — 2023</div>
+      <div class="timeline-role">Team Leader · مونتير رئيسي</div>
+      <div class="timeline-company">🏢 شركة نوفا للتسويق الرقمي · سوريا، حلب</div>
+      <div class="timeline-desc">قيادة فريق المونتاج وإدارة تدفق المشاريع. تنفيذ محتوى رقمي للعلامات التجارية مع الإشراف على جودة الإنتاج وتطوير معايير العمل البصري.</div>
+      <div class="timeline-tags">
+        <span class="tag">Team Lead</span>
+        <span class="tag">إدارة فريق</span>
+        <span class="tag">تسويق رقمي</span>
+        <span class="tag">Brand Content</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2022 — 2023</div>
+      <div class="timeline-role">مونتير فيديو</div>
+      <div class="timeline-company">🎥 استوديو الأهرام · فلسطين</div>
+      <div class="timeline-desc">العمل مع فريق إنتاج متخصص على مشاريع فيديو احترافية تشمل وثائقيات ومحتوى إبداعي متنوع.</div>
+      <div class="timeline-tags">
+        <span class="tag">استوديو</span>
+        <span class="tag">إنتاج احترافي</span>
+        <span class="tag">وثائقي</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2021 — حتى الآن</div>
+      <div class="timeline-role">صانع محتوى · يوتيوبرز</div>
+      <div class="timeline-company">🎬 يوتيوبرز وصناع محتوى · مستقل</div>
+      <div class="timeline-desc">اشتغلت مع عدد من اليوتيوبرز وصناع المحتوى على فيديوهات قصيرة وطويلة، مع التركيز على الـ Storytelling والإيقاع البصري.</div>
+      <div class="timeline-tags">
+        <span class="tag">Content Creator</span>
+        <span class="tag">Short Form</span>
+        <span class="tag">Long Form</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header">
+    <span class="section-label">معرض الأعمال</span>
+    <h2>شاهد <span>أعمالي</span></h2>
+  </div>
+  <div class="portfolio-cta">
+    <div class="portfolio-box">
+      <span class="portfolio-icon">🎥</span>
+      <div class="portfolio-title">معرض أعمالي الكامل</div>
+      <p class="portfolio-desc">أكثر من ٥٠٠ مشروع منجز تشمل إعلانات، فيديوهات سوشيال ميديا، ريلز، تيك توك، قنوات يوتيوب وأعمال تلفزيونية. اضغط على الزر لمشاهدة الأعمال على Google Drive.</p>
+      <!-- غيّر الرابط لما تجهز رابط الدرايف -->
+      <a href="https://drive.google.com/drive/folders/10G9rxj41izX4050Aav1nc0RA6lDdnYpo?usp=drive_link" target="_blank" class="drive-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 19h20L12 2z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 19h20" stroke="white" stroke-width="1.5"/><path d="M8 19L12 2l4 17" stroke="white" stroke-width="1.5"/></svg>
+        شاهد الأعمال على Drive
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-label">تواصل</span>
+    <h2>هل لديك <span>مشروع؟</span></h2>
+  </div>
+  <div class="contact-grid">
+    <a href="mailto:alixjop@gmail.com" class="contact-card">
+      <span class="contact-card-icon">📧</span>
+      <div class="contact-card-label">البريد الإلكتروني</div>
+      <div class="contact-card-value">alixjop@gmail.com</div>
+    </a>
+    <a href="tel:+352681536232" class="contact-card">
+      <span class="contact-card-icon">📱</span>
+      <div class="contact-card-label">الهاتف / واتساب</div>
+      <div class="contact-card-value">+352 681 536 232</div>
+    </a>
+    <a href="https://www.linkedin.com/in/nafie-gallow" target="_blank" class="contact-card">
+      <span class="contact-card-icon">💼</span>
+      <div class="contact-card-label">لينكدإن</div>
+      <div class="contact-card-value">nafie gallow</div>
+    </a>
+    <a href="https://instagram.com/nafie_editing" target="_blank" class="contact-card">
+      <span class="contact-card-icon">📸</span>
+      <div class="contact-card-label">إنستغرام</div>
+      <div class="contact-card-value">@nafie_editing</div>
+    </a>
+    <a href="https://tiktok.com/@nafie.g3" target="_blank" class="contact-card">
+      <span class="contact-card-icon">🎵</span>
+      <div class="contact-card-label">تيك توك</div>
+      <div class="contact-card-value">@nafie.g3</div>
+    </a>
+    <div class="contact-card" style="cursor:default;">
+      <span class="contact-card-icon">📍</span>
+      <div class="contact-card-label">الموقع</div>
+      <div class="contact-card-value">سوريا · متاح للعمل عن بُعد</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>صُنع بـ 💜 · <span>نافع كلو</span> · Video Editor © 2025</p>
+</footer>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        e.target.style.animationDelay = (i * 0.1) + 's';
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.glass-card, .skill-card, .timeline-item, .contact-card, .portfolio-box').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Smooth active nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--p4)' : '';
+    });
+  });
+</script>
+</body>
+</html>
